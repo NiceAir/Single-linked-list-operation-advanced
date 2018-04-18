@@ -431,38 +431,23 @@ int IsSListCross(PNode pHead1, PNode pHead2)
 {   
     PNode pTail1 = NULL;
     PNode pTail2 = NULL;
-    PNode pMiddle = NULL;
     if (pHead1 == NULL || pHead2 == NULL)   //若其中一个链表为空，则错误
     {
         return -1;
     }
     pTail1 = pHead1;
     pTail2 = pHead2;
-    while(pTail1->next)                     //找到第一条链表的尾
+    while(pTail1)       //找到第一个单链表的尾部
     {
         pTail1 = pTail1->next;
     }
-    while(pTail2->next)                     //找到第二条链表的尾
+    while(pTail2)       //找到第二个单链表的尾部
     {
         pTail2 = pTail2->next;
     }
-
-    pMiddle = pHead2;                       //遍历第二条链表，看是否有与第一条链表的头或尾相同的结点。若相同，则返回1。                      
-    while(pMiddle)
+    if (pTail1 == pTail2)   //比较两个链表的尾部是否相同
     {
-        if (pMiddle == pHead1 || pMiddle == pTail1)
-        {
-            return 1;
-        }
-    }
-
-    pMiddle = pHead1;                       //遍历第一条链表，看是否有与第二条链表的头或尾相同的结点。若相同，则返回1。
-    while(pMiddle)
-    {
-        if (pMiddle == pHead2 || pMiddle == pTail2)
-        {
-            return 1;
-        }
+        return 1
     }
     return 0;
 }
@@ -470,40 +455,54 @@ int IsSListCross(PNode pHead1, PNode pHead2)
 // 求两个单链表相交的交点---链表不带环 
 PNode GetCorssNode(PNode pHead1, PNode pHead2)
 {
-    PNode pTail1 = NULL;
-    PNode pTail2 = NULL;
-    PNode pMiddle = NULL;
+    PNode pN1 = pHead1;
+    PNode pN2 = pHead2;
+    int len1 = 0;
+    int len2 = 0;
     if (pHead1 == NULL || pHead2 == NULL)   //若其中一个链表为空，则错误
     {
-        return NULL;
+        return NULL
     }
-    pTail1 = pHead1;
-    pTail2 = pHead2;
-    while(pTail1->next)                     //找到第一条链表的尾
+    while(pN1)  //求第一个链表的长度
     {
-        pTail1 = pTail1->next;
+        len1++;
+        pN1 = pN1->next;
     }
-    while(pTail2->next)                     //找到第二条链表的尾
+    while(pN2)  //求第二个链表的长度
     {
-        pTail2 = pTail2->next;
+        len2++;
+        pN2 = pN2->next;
     }
-
-    pMiddle = pHead2;                       //遍历第二条链表，看是否有与第一条链表的头或尾相同的结点。若相同，则返回该结点。                       
-    while(pMiddle)
+    if (pN1 == pN2) //如果有交点，则求交点。没有交点则返回NULL
     {
-        if (pMiddle == pHead1 || pMiddle == pTail1)
-        {
-            return pMiddle;
+        int count = len1-len2;
+        pN1 = pHead1;
+        pN2 = pHead2;
+        if (len1>=len2) //若第一个链表长，就让第一个链表的指针先走
+        { 
+            while(count>0)
+            {
+                pN1 = pN1->next;
+                count--;
+            }
         }
-    }
-
-    pMiddle = pHead1;                       //遍历第一条链表，看是否有与第二条链表的头或尾相同的结点。若相同，则返回该结点。
-    while(pMiddle)
-    {
-        if (pMiddle == pHead2 || pMiddle == pTail2)
+        else            //若第二个链表长，就让第二个链表的指针先走
         {
-            return pMiddle;
+            while(count<0)
+            {
+                pN2 = pN2->next;
+                count++;
+            }
         }
+        while(pN1 && pN2)   //两指针同步走，走到交点就返回
+        {
+            if (pN1 == pN2)
+            {
+                return pN1;
+            }
+            pN1 = pN1->next;
+            pN2 = pN2->next;
+        } 
     }
-    return NULL;   
+    return NULL;
 }
